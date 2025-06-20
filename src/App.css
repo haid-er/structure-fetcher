@@ -40,3 +40,34 @@
 .read-the-docs {
   color: #888;
 }
+
+.dropzone {
+  border: 1px solid #cccccc;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0px;
+  text-align: center;
+  transition: border-color 0.3s, background-color 0.3s;
+  color: #fff;
+  background-color: #333;
+  cursor: pointer;
+}
+
+.dropzone:hover {
+  background-color: #444;
+}
+
+.dropzone.active {
+  border-color: #2196f3;
+  background-color: #f0f8ff;
+}
+
+.dropzone.accept {
+  border-color: #00e676;
+  background-color: #e8f5e9;
+}
+
+.dropzone.reject {
+  border-color: #ff1744;
+  background-color: #ffebee;
+}

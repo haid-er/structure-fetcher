@@ -9,7 +9,6 @@ function App() {
       <h1>Company Structure Fetcher</h1>
       <div className="card">
         <Dropzone />
-        <button>Hello</button>
       </div>
     </>
   )

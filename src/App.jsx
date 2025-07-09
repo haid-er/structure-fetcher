@@ -21,7 +21,7 @@ function App() {
       {isTreeOpen && (
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="flex gap-5 mx-5">
-            {/* <Table /> */}
+            <Table />
             <ShowStructure />
           </div>
           <button

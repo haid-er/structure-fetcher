@@ -176,14 +176,14 @@ export default function TailwindD3OrgChart() {
   return (
     <div
       ref={treeContainer}
-      className="w-[100vw] h-[100vh] bg-gray-50 overflow-auto border border-gray-200 rounded-lg shadow-lg p-4"
+      className="w-[60vw] h-[100%] bg-gray-50 overflow-auto border border-gray-200 rounded-lg shadow-lg p-4"
     >
       <Tree
         data={orgChartData}
         translate={translate}
         pathFunc="diagonal"
         orientation="vertical"
-        nodeSize={{ x: NODE_WIDTH - 60, y: NODE_HEIGHT + 200 }}
+        nodeSize={{ x: NODE_WIDTH - 60, y: NODE_HEIGHT + 100 }}
         renderCustomNodeElement={renderForeignObjectNode}
         separation={{ siblings: 1.8, nonSiblings: 2.5 }}
         zoomable

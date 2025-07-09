@@ -1,6 +1,7 @@
 function flattenOrgChart(node, level = 0, parent = null, path = []) {
     const currentPath = [...path, node.name];
     const flat = [{
+        id: currentPath.join(">"),
         name: node.name,
         level,
         parent: parent || null,

@@ -28,7 +28,7 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
           },
         });
         if (response?.data) {
-          console.log(response?.data);
+          // console.log(response?.data);
           setTreeData(response?.data);
         }
         toast.success(response?.data?.message || "Success");

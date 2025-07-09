@@ -2,44 +2,81 @@ import { useState } from "react";
 import "./App.css";
 import Dropzone from "./components/Dropzone";
 import { Toaster } from "react-hot-toast";
-import Table from "./components/Table";
 import ShowStructure from "./components/ShowStructure";
+import TableView from "./components/TableView";
 
 function App() {
   const [treeData, setTreeData] = useState(null);
   const [isTreeOpen, setisTreeOpen] = useState(null);
+  const [isTableOpen, setisTableOpen] = useState(false);
   return (
     <div className="container mx-auto p-4 flex flex-col items-center justify-center h-[100vh]">
       <h1 className="font-bold text-2xl mb-5">Company Structure Fetcher</h1>
-      {!isTreeOpen && (
+      {!treeData && (
         <div className="card flex flex-col items-center justify-center gap-5">
           <Dropzone setisTreeOpen={setisTreeOpen} setTreeData={setTreeData} />
-          {treeData && <button
-            onClick={() => {
-              setisTreeOpen(true);
-            }}
-            className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
-          >
-            Show Tree
-          </button>}
         </div>
 
       )}
+      {!isTreeOpen && !isTableOpen && <div className="flex flex-col gap-5">
 
-      {isTreeOpen && (
+        {treeData && <button
+          onClick={() => {
+            setisTreeOpen(true);
+          }}
+          className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+        >
+          Show Tree
+        </button>}
+        {treeData && !isTableOpen && <button
+          onClick={() => {
+            setisTableOpen(true);
+          }}
+          className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+        >
+          Show Table
+        </button>
+        }
+        {
+          treeData && <button
+            onClick={() => {
+              setTreeData(null);
+              setisTreeOpen(false);
+              setisTableOpen(false);
+            }}
+            className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+          >
+            Upload New Chart</button>
+        }
+
+      </div>}
+      {isTableOpen && (
+        <div className="flex flex-col items-center justify-center gap-5">
+          <TableView data={treeData} />
+          {treeData && <button
+            onClick={() => {
+              setisTableOpen(false);
+            }
+            }
+            className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+          >
+            Hide Table
+          </button>}
+        </div>
+      )}
+      {isTreeOpen && !isTableOpen && (
         <div className="flex flex-col items-center justify-center gap-5">
           <div className="flex gap-5 mx-5">
-            <Table />
             <ShowStructure data={treeData} />
           </div>
-          <button
+          {treeData && <button
             onClick={() => {
               setisTreeOpen(false);
             }}
             className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
           >
             Hide Tree
-          </button>
+          </button>}
         </div>
       )}
       <Toaster />

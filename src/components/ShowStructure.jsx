@@ -1,19 +1,10 @@
-const flattenOrg = (node, parent = null, level = 0, out = []) => {
-  out.push({
-    company: node.name,
-    parent: parent,
-    level: level,
-  });
+import { useRef, useState, useEffect } from "react";
+import Tree from "react-d3-tree";
 
-  if (node.children) {
-    node.children.forEach((child) =>
-      flattenOrg(child, node.name, level + 1, out)
-    );
-  }
+const NODE_WIDTH = 200;
+const NODE_HEIGHT = 80;
 
-  return out;
-};
-export default function Table() {
+export default function TailwindD3OrgChart() {
   const orgChartData = {
     name: "Bluefield Solar Income Fund Ltd (Guernsey)",
     children: [
@@ -138,29 +129,66 @@ export default function Table() {
       },
     ],
   };
-  const tableData = flattenOrg(orgChartData);
-  // src/utils/flattenOrg.js
+  const treeContainer = useRef(null);
+  const [translate, setTranslate] = useState({ x: 0, y: 0 });
+
+  // Center tree on mount
+  useEffect(() => {
+    const dimensions = treeContainer.current.getBoundingClientRect();
+    setTranslate({
+      x: dimensions.width / 2 - NODE_WIDTH / 2,
+      y: 50,
+    });
+  }, []);
+
+  const renderForeignObjectNode = ({ nodeDatum, toggleNode }) => (
+    <g>
+      {/* line-click toggler */}
+      {nodeDatum.children && (
+        <circle
+          r={10}
+          cx={0}
+          cy={20}
+          fill="black"
+          stroke="yellow"
+          strokeWidth={1}
+          onClick={toggleNode}
+        />
+      )}
+
+      <foreignObject width={NODE_WIDTH} height={NODE_HEIGHT} x={-100} y={-70}>
+        <div
+          className={`h-full w-full p-2 rounded-lg shadow border 
+            ${
+              nodeDatum.special
+                ? "border-yellow-400 bg-yellow-50"
+                : "border-gray-300 bg-white"
+            }`}
+        >
+          <p className="text-sm font-semibold text-gray-800 truncate">
+            {nodeDatum.name}
+          </p>
+        </div>
+      </foreignObject>
+    </g>
+  );
 
   return (
-    <div className="w-full border border-gray-200 rounded-xl overflow-x-auto overflow-auto max-h-[80vh]">
-      <table className="w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50 text-slate-800">
-          <tr className="divide-x divide-gray-200">
-            <th className="px-4 py-2 text-left">Company</th>
-            <th className="px-4 py-2 text-left">Parent</th>
-            <th className="px-4 py-2 text-left">Level</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200 bg-white text-slate-800">
-          {tableData.map((row, idx) => (
-            <tr key={idx} className="divide-x divide-gray-200">
-              <td className="px-4 py-2">{row.company}</td>
-              <td className="px-4 py-2">{row.parent || "—"}</td>
-              <td className="px-4 py-2">{row.level}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div
+      ref={treeContainer}
+      className="w-[60vw] h-[100%] bg-gray-50 overflow-auto border border-gray-200 rounded-lg shadow-lg p-4"
+    >
+      <Tree
+        data={orgChartData}
+        translate={translate}
+        pathFunc="diagonal"
+        orientation="vertical"
+        nodeSize={{ x: NODE_WIDTH - 60, y: NODE_HEIGHT + 100 }}
+        renderCustomNodeElement={renderForeignObjectNode}
+        separation={{ siblings: 1.8, nonSiblings: 2.5 }}
+        zoomable
+        initialDepth={5}
+      />
     </div>
   );
 }

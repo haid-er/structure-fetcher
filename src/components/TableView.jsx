@@ -1,7 +1,7 @@
 import flattenOrgChart from "../utils/flattenOrgchart";
 
 export default function TableView({ data, onEdit, onDelete, onAdd }) {
-  if (!data || data.data === 0) {
+  if (!data) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-gray-500">Loading...</p>
@@ -9,7 +9,7 @@ export default function TableView({ data, onEdit, onDelete, onAdd }) {
     );
   }
 
-  const flattenData = flattenOrgChart(data.data);
+  const flattenData = flattenOrgChart(data);
   // console.log(flattenData);
   return (
     <div className="w-full border border-gray-200 rounded-xl overflow-x-auto overflow-auto max-h-[80vh] scrollbar" id="style-1">

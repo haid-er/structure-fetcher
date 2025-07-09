@@ -3,7 +3,7 @@ import "./App.css";
 import Dropzone from "./components/Dropzone";
 import { Toaster } from "react-hot-toast";
 import ShowStructure from "./components/ShowStructure";
-import TableView from "./components/TableView";
+import TableViewWithActions from "./components/TableViewWithActions";
 
 function App() {
   const [treeData, setTreeData] = useState(null);
@@ -52,7 +52,7 @@ function App() {
       </div>}
       {isTableOpen && (
         <div className="flex flex-col items-center justify-center gap-5">
-          <TableView data={treeData} />
+          <TableViewWithActions data={treeData} />
           {treeData && <button
             onClick={() => {
               setisTableOpen(false);

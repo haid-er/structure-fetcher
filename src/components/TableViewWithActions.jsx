@@ -2,107 +2,126 @@
 import { useState } from "react";
 import TableView from "./TableView";
 import Swal from "sweetalert2";
-function addChild(tree, targetPath, newNode) {
-    if (!tree) return;
 
-    if (targetPath.length === 1 && tree.name === targetPath[0]) {
-        if (!tree.children) tree.children = [];
-        tree.children.push(newNode);
+function findNode(root, pathInput) {
+    const pathArr = Array.isArray(pathInput)
+        ? pathInput.map(p => p.trim().toLowerCase())
+        : pathInput.split(">").map(p => p.trim().toLowerCase());
+
+    if (!root || root.name.trim().toLowerCase() !== pathArr[0]) return null;
+    let current = root;
+    for (let i = 1; i < pathArr.length; i++) {
+        if (!current.children) return null;
+        const seg = pathArr[i];
+        current = current.children.find(c => {
+            const name = c.name.trim().toLowerCase();
+            return name === seg || name.startsWith(seg);
+        });
+        if (!current) return null;
+    }
+    return current;
+}
+
+function addNode(tree, targetPath, newNode) {
+    const parent = findNode(tree, targetPath);
+    if (!parent) {
+        Swal.fire({ icon: "error", title: "Error", text: "Parent node not found!" });
         return;
     }
-
-    if (tree.children) {
-        for (let child of tree.children) {
-            if (targetPath[1] === child.name) {
-                addChild(child, targetPath.slice(1), newNode);
-            }
-        }
-    }
+    if (!Array.isArray(parent.children)) parent.children = [];
+    parent.children.push(newNode);
 }
 
 function updateNode(tree, targetPath, newName) {
-    if (!tree) return;
-
-    if (targetPath.length === 1 && tree.name === targetPath[0]) {
-        tree.name = newName;
+    const node = findNode(tree, targetPath);
+    if (!node) {
+        Swal.fire({ icon: "error", title: "Error", text: "Node to update not found!" });
         return;
     }
-
-    if (tree.children) {
-        for (let child of tree.children) {
-            if (targetPath[1] === child.name) {
-                updateNode(child, targetPath.slice(1), newName);
-            }
-        }
-    }
+    node.name = newName;
 }
 
 function deleteNode(tree, targetPath) {
-    if (!tree?.children) return;
+    const pathArr = Array.isArray(targetPath)
+        ? targetPath.map(p => p.trim())
+        : targetPath.split(">").map(p => p.trim());
 
-    const nameToDelete = targetPath[targetPath.length - 1];
-    const parentPath = targetPath.slice(0, -1);
-
-    const findParent = (node, path) => {
-        if (path.length === 0) return node;
-        const next = node.children?.find(c => c.name === path[0]);
-        return next ? findParent(next, path.slice(1)) : null;
-    };
-
-    const parent = findParent(tree, parentPath);
-    if (parent?.children) {
-        parent.children = parent.children.filter(c => c.name !== nameToDelete);
+    if (pathArr.length === 1 && tree.name.trim() === pathArr[0]) {
+        Swal.fire({ icon: "error", title: "Error", text: "Cannot delete the root node!" });
+        return;
     }
+
+    const parentPath = pathArr.slice(0, -1);
+    const nameToDelete = pathArr[pathArr.length - 1].trim().toLowerCase();
+    const parent = findNode(tree, parentPath);
+    if (!parent?.children) return;
+
+    parent.children = parent.children.filter(
+        child => child.name.trim().toLowerCase() !== nameToDelete
+    );
+    if (parent.children.length === 0) delete parent.children;
 }
 
-
-const TableViewWithActions = ({ initialData }) => {
-    const [orgChart, setOrgChart] = useState(initialData);
+const TableViewWithActions = ({ data }) => {
+    const [orgChart, setOrgChart] = useState(data.data);
 
     const handleAdd = (path) => {
-        // Swal.fire({
-        //     title: 'Add New Entity',
-        //     text: 'Enter the name of the new entity:',
-        //     input: 'text',
-        //     inputPlaceholder: 'New Entity Name',
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Add',
-        //     cancelButtonText: 'Cancel',
-        // }).then((result) => {
-        //     if (result.isConfirmed && result.value) {
-        //         const newNode = { name: result.value, children: [] };
-        //         const updated = structuredClone(orgChart); // OR deep copy using lodash
-        //         addChild(updated, path, newNode);
-        //         setOrgChart(updated);
-        //     }
-        // });
-        console.log(path)
-        const newNode = { name: "New Entity" };
-        const updated = structuredClone(orgChart); // OR deep copy using lodash
-        addNode(updated, path, newNode);
-        setOrgChart(updated);
+        Swal.fire({
+            title: "Add New Entity",
+            input: "text",
+            inputPlaceholder: "Entity Name",
+            showCancelButton: true,
+            confirmButtonText: "Add",
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                const updated = structuredClone(orgChart);
+                addNode(updated, path, { name: result.value, children: [] });
+                setOrgChart(updated);
+            }
+        });
     };
 
     const handleEdit = (path) => {
-        const newName = prompt("Enter new name:");
-        if (!newName) return;
-        const updated = structuredClone(orgChart);
-        updateNode(updated, path, newName);
-        setOrgChart(updated);
+        Swal.fire({
+            title: "Edit Entity Name",
+            input: "text",
+            inputValue: findNode(orgChart, path)?.name || "",
+            inputPlaceholder: "New Name",
+            showCancelButton: true,
+            confirmButtonText: "Save",
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                const updated = structuredClone(orgChart);
+                updateNode(updated, path, result.value);
+                setOrgChart(updated);
+            }
+        });
     };
 
     const handleDelete = (path) => {
-        const confirmDelete = window.confirm("Delete this node?");
-        if (!confirmDelete) return;
-        const updated = structuredClone(orgChart);
-        deleteNode(updated, path);
-        setOrgChart(updated);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will delete the node and its children.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const updated = structuredClone(orgChart);
+                deleteNode(updated, path);
+                setOrgChart(updated);
+            }
+        });
     };
 
     return (
         <>
-            <h2>Org Chart Table View</h2>
-            <TableView data={orgChart} onAdd={handleAdd} onEdit={handleEdit} onDelete={handleDelete} />
+            <TableView
+                data={orgChart}
+                onAdd={handleAdd}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
         </>
     );
 };

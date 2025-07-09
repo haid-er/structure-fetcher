@@ -3,12 +3,15 @@ import './App.css'
 import Dropzone from './components/Dropzone'
 import ShowD3 from './components/ShowD3';
 import { Toaster } from 'react-hot-toast';
+import Table from './components/Table';
 
 function App() {
   const [treeData, setTreeData] = useState(null);
   const [isTreeOpen, setisTreeOpen] = useState(null);
   return (
     <>
+      <Table />
+
       <h1>Company Structure Fetcher</h1>
       {!isTreeOpen &&
         <div className="card">

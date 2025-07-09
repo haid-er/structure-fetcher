@@ -19,9 +19,9 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
     let response;
     if (file) {
       try {
-        formData.append("file", file);
+        formData.append("orgchart", file);
 
-        response = await axios.post(`${BACKEND_URL}/upload-openai`, formData, {
+        response = await axios.post(`${BACKEND_URL}/user/fetch-json`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             enctype: "multipart/form-data",

@@ -4,7 +4,15 @@ import Tree from "react-d3-tree";
 const NODE_WIDTH = 200;
 const NODE_HEIGHT = 80;
 
-export default function TailwindD3OrgChart() {
+export default function ShowStructure({ data }) {
+  console.log(data);
+  if (!data)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+
   const orgChartData = {
     name: "Bluefield Solar Income Fund Ltd (Guernsey)",
     children: [
@@ -159,10 +167,9 @@ export default function TailwindD3OrgChart() {
       <foreignObject width={NODE_WIDTH} height={NODE_HEIGHT} x={-100} y={-70}>
         <div
           className={`h-full w-full p-2 rounded-lg shadow border 
-            ${
-              nodeDatum.special
-                ? "border-yellow-400 bg-yellow-50"
-                : "border-gray-300 bg-white"
+            ${nodeDatum.special
+              ? "border-yellow-400 bg-yellow-50"
+              : "border-gray-300 bg-white"
             }`}
         >
           <p className="text-sm font-semibold text-gray-800 truncate">
@@ -172,18 +179,17 @@ export default function TailwindD3OrgChart() {
       </foreignObject>
     </g>
   );
-
   return (
     <div
       ref={treeContainer}
       className="w-[60vw] h-[100%] bg-gray-50 overflow-auto border border-gray-200 rounded-lg shadow-lg p-4"
     >
       <Tree
-        data={orgChartData}
+        data={data.data}
         translate={translate}
         pathFunc="diagonal"
         orientation="vertical"
-        nodeSize={{ x: NODE_WIDTH - 60, y: NODE_HEIGHT + 100 }}
+        nodeSize={{ x: NODE_WIDTH - 60, y: NODE_HEIGHT + 200 }}
         renderCustomNodeElement={renderForeignObjectNode}
         separation={{ siblings: 1.8, nonSiblings: 2.5 }}
         zoomable

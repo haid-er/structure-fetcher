@@ -4,11 +4,33 @@ import Dropzone from "./components/Dropzone";
 import { Toaster } from "react-hot-toast";
 import ShowStructure from "./components/ShowStructure";
 import TableViewWithActions from "./components/TableViewWithActions";
+import Swal from "sweetalert2";
 
 function App() {
   const [treeData, setTreeData] = useState(null);
   const [isTreeOpen, setisTreeOpen] = useState(null);
   const [isTableOpen, setisTableOpen] = useState(false);
+  const handleExport = () => {
+    try {
+      const jsonStr = JSON.stringify(treeData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "treeData.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Export Failed",
+        text: err.message,
+      });
+    }
+  };
   return (
     <div className="container mx-auto p-4 flex flex-col items-center justify-center h-[100vh]">
       <h1 className="font-bold text-2xl mb-5">Company Structure Fetcher</h1>
@@ -52,7 +74,7 @@ function App() {
       </div>}
       {isTableOpen && (
         <div className="flex flex-col items-center justify-center gap-5">
-          <TableViewWithActions data={treeData} />
+          <TableViewWithActions data={treeData} setTreeData={setTreeData} />
           {treeData && <button
             onClick={() => {
               setisTableOpen(false);
@@ -69,14 +91,23 @@ function App() {
           <div className="flex gap-5 mx-5">
             <ShowStructure data={treeData} />
           </div>
-          {treeData && <button
-            onClick={() => {
-              setisTreeOpen(false);
-            }}
-            className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
-          >
-            Hide Tree
-          </button>}
+          {treeData && <div className="flex gap-5 mx-5">
+            <button
+              onClick={() => {
+                setisTreeOpen(false);
+              }}
+              className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+            >
+              Hide Tree
+            </button>
+            <button
+              onClick={handleExport}
+              className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+            >
+              📤 Export JSON
+            </button>
+          </div>
+          }
         </div>
       )}
       <Toaster />

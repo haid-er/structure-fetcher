@@ -28,8 +28,8 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
           },
         });
         if (response?.data) {
-          // console.log(response?.data);
-          setTreeData(response?.data);
+          console.log(response);
+          setTreeData(response?.data?.data);
         }
         toast.success(response?.data?.message || "Success");
       } catch (error) {

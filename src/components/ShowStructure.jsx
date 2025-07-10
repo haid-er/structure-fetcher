@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import Tree from "react-d3-tree";
+import Swal from "sweetalert2";
 
 const NODE_WIDTH = 200;
 const NODE_HEIGHT = 80;
@@ -179,13 +180,14 @@ export default function ShowStructure({ data }) {
       </foreignObject>
     </g>
   );
+
   return (
     <div
       ref={treeContainer}
       className="w-[90vw] h-[80vh] bg-gray-50 overflow-auto border border-gray-200 rounded-lg shadow-lg p-4"
     >
       <Tree
-        data={data.data}
+        data={data}
         translate={translate}
         pathFunc="diagonal"
         orientation="vertical"
@@ -195,6 +197,7 @@ export default function ShowStructure({ data }) {
         zoomable
         initialDepth={5}
       />
+
     </div>
   );
 }

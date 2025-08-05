@@ -33,7 +33,7 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
         }
         toast.success(response?.data?.message || "Success");
       } catch (error) {
-        toast.error(response?.data?.message || "Error");
+        toast.error(error?.message || "Error");
       }
     } else {
       toast.error("No File Selected");

@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import ShowStructure from "./components/ShowStructure";
 import TableViewWithActions from "./components/TableViewWithActions";
 import Swal from "sweetalert2";
+import ViewCSV from "./components/View";
 
 function App() {
   const [treeData, setTreeData] = useState(null);
@@ -75,15 +76,16 @@ function App() {
       {isTableOpen && (
         <div className="flex flex-col items-center justify-center gap-5">
           <TableViewWithActions data={treeData} setTreeData={setTreeData} />
-          {treeData && <button
-            onClick={() => {
-              setisTableOpen(false);
-            }
-            }
-            className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
-          >
-            Hide Table
-          </button>}
+          {treeData &&
+            <button
+              onClick={() => {
+                setisTableOpen(false);
+              }
+              }
+              className="border border-teal-800 hover:border-teal-600 rounded py-4 px-8 bg-transparent font-bold text-teal-800 hover:text-teal-600 transition duration-500 hover:cursor-pointer"
+            >
+              Hide Table
+            </button>}
         </div>
       )}
       {isTreeOpen && !isTableOpen && (

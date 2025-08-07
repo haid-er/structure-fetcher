@@ -14,7 +14,7 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
   }, []);
 
   const uploadFile = async () => {
-    setisTreeOpen(true);
+    // setisTreeOpen(true);
     const formData = new FormData();
     let response;
     if (file) {

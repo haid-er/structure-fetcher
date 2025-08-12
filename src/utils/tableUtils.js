@@ -1,3 +1,5 @@
+import Swal from "sweetalert2";
+
 function findNode(root, pathInput) {
     const pathArr = Array.isArray(pathInput)
         ? pathInput.map(p => p.trim().toLowerCase())

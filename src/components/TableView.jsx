@@ -58,7 +58,7 @@ export default function TableView({ data, onEdit, onDelete, onAdd }) {
   }
 
   return (
-    <div className="w-[70vw] border border-gray-200 rounded-xl overflow-x-auto overflow-auto h-[70vh] scrollbar" id="style-1">
+    <div className="w-[70vw] border border-gray-200 rounded-xl overflow-x-auto overflow-auto h-[80vh] scrollbar" id="style-1">
       <div className="flex items-center gap-2 p-5 bg-gray-50 sticky top-0 z-20">
         <input
           type="text"

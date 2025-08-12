@@ -6,7 +6,7 @@ export default function Table() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <div className="w-full max-w-5xl">
-                <TableViewWithActions data={treeData} setTreeData />
+                <TableViewWithActions data={treeData} setTreeData={setTreeData} />
             </div>
         </div>
     );

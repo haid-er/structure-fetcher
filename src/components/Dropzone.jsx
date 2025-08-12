@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import documentIcon from "../assets/document.png";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 function Dropzone({ setisTreeOpen, setTreeData }) {
@@ -19,6 +20,14 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
     let response;
     if (file) {
       try {
+        Swal.fire({
+          title: "Processing...",
+          text: "Please wait while we process your file.",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
         formData.append("orgchart", file);
 
         response = await axios.post(`${BACKEND_URL}/user/fetch-json`, formData, {
@@ -27,12 +36,14 @@ function Dropzone({ setisTreeOpen, setTreeData }) {
             enctype: "multipart/form-data",
           },
         });
+        Swal.close();
         if (response?.data) {
           console.log(response);
           setTreeData(response?.data?.data);
         }
         toast.success(response?.data?.message || "Success");
       } catch (error) {
+        Swal.close();
         toast.error(error?.message || "Error");
       }
     } else {
